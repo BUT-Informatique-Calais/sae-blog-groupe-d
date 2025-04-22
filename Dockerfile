@@ -2,13 +2,16 @@ FROM php:8.2-apache
 
 # Installation des dépendances système
 RUN apt-get update && apt-get install -y \
+    make \
+    npm \
+    yarn \
+    bash \
     git \
     unzip \
     libzip-dev \
     libicu-dev \
     libsqlite3-dev \
     nodejs \
-    npm \
     && docker-php-ext-install \
     pdo \
     pdo_sqlite \
