@@ -37,19 +37,28 @@ RUN if [ -f "public/index.php" ]; then \
     sed -i "s|require_once.*autoload_runtime\.php|require_once dirname(__DIR__).'/vendor/autoload.php'|" public/index.php; \
     fi
 
-# Installation des dépendances PHP via Composer
-RUN composer install --no-interaction --optimize-autoloader
+# Vérification de l'installation de Composer
+RUN composer install --no-interaction --optimize-autoloader || (echo "Composer install failed" && exit 1)
 
-# Installation des dépendances Node.js et build assets uniquement si package.json existe
+# Vérification de l'installation des dépendances Node.js
 RUN if [ -f "package.json" ]; then \
-    npm install && npm run build; \
+    npm install && npm run build || (echo "Node.js build failed" && exit 1); \
     fi
 
-# Création explicite du dossier pour la base de données SQLite
-RUN mkdir -p var/data
-RUN touch var/data/blog.sqlite
-RUN chmod 777 var/data/blog.sqlite
-RUN chown -R www-data:www-data var vendor
+# Vérification de la création des dossiers et permissions
+RUN mkdir -p var/cache var/log \
+    && touch var/data.db \
+    && chown -R www-data:www-data var/data.db \
+    && chmod 664 var/data.db \
+    && chown -R www-data:www-data var \
+    && chmod -R 777 var
+
+# S'assurer que le serveur apache s'exécute en tant que www-data
+RUN sed -i 's/export APACHE_RUN_USER=www-data/export APACHE_RUN_USER=www-data/' /etc/apache2/envvars
+RUN sed -i 's/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=www-data/' /etc/apache2/envvars
 
 # Exposition du port
 EXPOSE 80
+
+# Démarrage d'Apache avec le bon utilisateur
+CMD ["apache2-foreground"]
