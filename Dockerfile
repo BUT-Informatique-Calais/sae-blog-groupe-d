@@ -48,17 +48,13 @@ RUN if [ -f "package.json" ]; then \
 # Vérification de la création des dossiers et permissions
 RUN mkdir -p var/cache var/log \
     && touch var/data.db \
-    && chown -R www-data:www-data var/data.db \
+    && chown www-data:www-data var/data.db \
     && chmod 664 var/data.db \
     && chown -R www-data:www-data var \
     && chmod -R 777 var
 
-# S'assurer que le serveur apache s'exécute en tant que www-data
-RUN sed -i 's/export APACHE_RUN_USER=www-data/export APACHE_RUN_USER=www-data/' /etc/apache2/envvars
-RUN sed -i 's/export APACHE_RUN_GROUP=www-data/export APACHE_RUN_GROUP=www-data/' /etc/apache2/envvars
+# Vérification de la création du fichier SQLite
+RUN touch var/data.db \
+    && chown www-data:www-data var/data.db \
+    && chmod 664 var/data.db
 
-# Exposition du port
-EXPOSE 80
-
-# Démarrage d'Apache avec le bon utilisateur
-CMD ["apache2-foreground"]
