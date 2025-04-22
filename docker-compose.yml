@@ -11,6 +11,7 @@ services:
     volumes:
       - .:/var/www/html
       - sqlite_data:/var/www/html/var/data
+      - ./public/assets:/var/www/html/public/assets # Ajout du volume pour les fichiers statiques
       # Exclusion des dossiers sensibles pour éviter les problèmes de permissions
       - /var/www/html/vendor
       - /var/www/html/var
@@ -18,6 +19,7 @@ services:
       - APP_ENV=dev
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
       - COMPOSER_ALLOW_SUPERUSER=1
+      - SYMFONY_ALLOW_ASSETS=1 # Ajout pour autoriser les assets
     restart: unless-stopped
 
   mailpit:

@@ -15,6 +15,10 @@ RUN apt-get update && apt-get install -y \
     zip \
     intl
 
+# Installation de Yarn
+RUN npm install -g yarn \
+    && yarn --version || (echo "Yarn installation failed" && exit 1) # Vérification de l'installation de Yarn
+
 # Activation du module rewrite d'Apache
 RUN a2enmod rewrite
 
@@ -31,6 +35,21 @@ WORKDIR /var/www/html
 
 # Copie des fichiers de l'application
 COPY . .
+
+# Copie des fichiers de configuration front-end
+COPY package.json /var/www/html/
+COPY yarn.lock /var/www/html/
+
+# Installation des dépendances front-end
+RUN yarn install \
+    && yarn add @symfony/webpack-encore --dev # Ajout explicite de Webpack Encore
+
+# Ensure the src directory exists with a placeholder file
+RUN mkdir -p src \
+    && echo "console.log('Placeholder file');" > src/index.js
+
+# Compilation des fichiers statiques pour la production
+RUN yarn encore production --mode=production
 
 # Correction du chemin de l'autoloader dans index.php
 RUN if [ -f "public/index.php" ]; then \

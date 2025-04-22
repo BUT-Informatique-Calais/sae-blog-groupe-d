@@ -1,0 +1,29 @@
+{
+  "name": "sae-blog-groupe-d",
+  "version": "1.0.0",
+  "description": "Le projet est un blog en symfony.",
+  "main": "index.js",
+  "private": true,
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "@symfony/webpack-encore": "^4.0.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "encore dev",
+    "build": "encore production"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BUT-Informatique-Calais/sae-blog-groupe-d.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BUT-Informatique-Calais/sae-blog-groupe-d/issues"
+  },
+  "homepage": "https://github.com/BUT-Informatique-Calais/sae-blog-groupe-d#readme"
+}
