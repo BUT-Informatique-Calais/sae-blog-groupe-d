@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     build:
@@ -12,9 +10,6 @@ services:
       - .:/var/www/html
       - /var/www/html/vendor
       - sqlite_data:/var/www/html/var/data
-      # Exclusion des dossiers sensibles pour éviter les problèmes de permissions
-      - /var/www/html/vendor
-      - /var/www/html/var
     environment:
       - APP_ENV=dev
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
