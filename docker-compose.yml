@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: symfony_blog_app
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      # Ne remontez pas vendor pour éviter les problèmes d'autoload
+      - /var/www/html/vendor
+      - sqlite_data:/var/www/html/var/data
+    environment:
+      - APP_ENV=dev
+      - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
+      - COMPOSER_ALLOW_SUPERUSER=1
+    restart: unless-stopped
+
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: symfony_blog_mailpit
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+    environment:
+      - MP_SMTP_AUTH_ACCEPT_ANY=1
+      - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:
+    driver: local
