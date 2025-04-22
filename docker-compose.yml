@@ -10,7 +10,6 @@ services:
       - "8080:80"
     volumes:
       - .:/var/www/html
-      # Ne remontez pas vendor pour éviter les problèmes d'autoload
       - /var/www/html/vendor
       - sqlite_data:/var/www/html/var/data
     environment:
