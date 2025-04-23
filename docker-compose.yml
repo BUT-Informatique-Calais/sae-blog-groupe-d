@@ -9,12 +9,17 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
-      - ./var/data:/var/www/html/var/data
+      - sqlite_data:/var/www/html/var/data
     environment:
       - APP_ENV=dev
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
       - COMPOSER_ALLOW_SUPERUSER=1
       - SYMFONY_ALLOW_ASSETS=1
+    user: root
+    command: >
+      sh -c "chown -R www-data:www-data /var/www/html/var &&
+             chmod -R 777 /var/www/html/var &&
+             apache2-foreground"
     restart: unless-stopped
 
   mailpit:
@@ -28,15 +33,6 @@ services:
       - MP_SMTP_AUTH_ALLOW_INSECURE=1
     restart: unless-stopped
 
-  sqlitebrowser:
-    image: linuxserver/sqlitebrowser
-    container_name: symfony_blog_sqlitebrowser
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./var/data:/data
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Europe/Paris
-    restart: unless-stopped
+volumes:
+  sqlite_data:
+    driver: local
