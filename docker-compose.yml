@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
-      - sqlite_data:/var/www/html/var/data
+      - ./var/data:/var/www/html/var/data
     environment:
       - APP_ENV=dev
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
@@ -28,6 +28,15 @@ services:
       - MP_SMTP_AUTH_ALLOW_INSECURE=1
     restart: unless-stopped
 
-volumes:
-  sqlite_data:
-    driver: local
+  sqlitebrowser:
+    image: linuxserver/sqlitebrowser
+    container_name: symfony_blog_sqlitebrowser
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./var/data:/data
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
+    restart: unless-stopped

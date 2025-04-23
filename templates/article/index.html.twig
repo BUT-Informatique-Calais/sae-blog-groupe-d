@@ -3,6 +3,14 @@
 {% set titre = "Dernières actualités" %}
 
 {% block page %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <div class="mb-4">
+            <a href="{{ path('article.new') }}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Créer un nouvel article
+            </a>
+        </div>
+    {% endif %}
+
     {% for article in articles %}
         {% include 'article/_card.html.twig' %}
     {% endfor %}
