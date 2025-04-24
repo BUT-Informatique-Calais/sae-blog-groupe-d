@@ -68,15 +68,26 @@ RUN if [ -f "package.json" ]; then \
     fi
 
 # Vérification de la création des dossiers et permissions
-RUN mkdir -p var/cache var/log \
-    && touch var/data.db \
-    && chown www-data:www-data var/data.db \
-    && chmod 664 var/data.db \
+RUN mkdir -p var/cache var/log var/data \
+    && touch var/data/blog.sqlite \
+    && chown www-data:www-data var/data/blog.sqlite \
+    && chmod 664 var/data/blog.sqlite \
     && chown -R www-data:www-data var \
-    && chmod -R 777 var
+    && chmod -R 775 var
 
 # Vérification de la création du fichier SQLite
 RUN touch var/data.db \
     && chown www-data:www-data var/data.db \
     && chmod 664 var/data.db
+
+# Ajout de la configuration pour marquer le répertoire comme sûr pour Git
+RUN git config --global --add safe.directory /var/www/html
+
+# Création du fichier SQLite et configuration des permissions
+RUN mkdir -p var/cache var/log var/data \
+    && touch var/data/data.db \
+    && chown www-data:www-data var/data/data.db \
+    && chmod 664 var/data/data.db \
+    && chown -R www-data:www-data var \
+    && chmod -R 775 var
 

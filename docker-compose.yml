@@ -9,7 +9,9 @@ services:
     volumes:
       - .:/var/www/html
       - /var/www/html/vendor
-      - sqlite_data:/var/www/html/var/data
+      - sqlite_data:/var/www/html/var/data 
+      - ./var/data/blog.sqlite:/var/www/html/var/data/blog.sqlite
+      - ./var/data/blog.sqlite:/var/www/html/var/data/blog.sqlite
     environment:
       - APP_ENV=dev
       - DATABASE_URL=sqlite:///%kernel.project_dir%/var/data/blog.sqlite
@@ -31,6 +33,17 @@ services:
     environment:
       - MP_SMTP_AUTH_ACCEPT_ANY=1
       - MP_SMTP_AUTH_ALLOW_INSECURE=1
+    restart: unless-stopped
+
+  sqlitebrowser:
+    image: linuxserver/sqlitebrowser
+    container_name: sqlitebrowser
+    ports:
+      - "3000:3000"
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Paris
     restart: unless-stopped
 
 volumes:
